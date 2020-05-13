@@ -9,7 +9,7 @@
 
 "dependencies": {
     
-    "com.quocnt.google-sheet-localizations-unity": "https://https://github.com/quocnt-09/Unity-Collection.git",    
+    "com.quocnt.unity-extensions": "https://github.com/quocnt-09/Unity-Extensions.git",    
 }
 
 # Version 1.0.0 - 2019-09-08
