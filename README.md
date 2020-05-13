@@ -9,7 +9,7 @@
 
 "dependencies": {
     
-    "com.quocnt.unity-extensions": "https://github.com/quocnt-09/Unity-Extensions.git",    
+    "com.quocnt.gstu-exporter": "https://github.com/quocnt-09/GSTU-Exporter.git",  
 }
 
 # Version 1.0.0 - 2019-09-08
