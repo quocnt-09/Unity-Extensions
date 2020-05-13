@@ -1,6 +1,6 @@
 {
 	"name": "com.quocnt.unity-extensions",
-	"version": "0.4.0",
+	"version": "0.1.0",
 	"displayName": "QNT-Unity-Extensions",
 	"unity": "2018.4",
 	"description": "Extensions For Unity Framework",
