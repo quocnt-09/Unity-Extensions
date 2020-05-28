@@ -6,5 +6,5 @@
 + Add follow:
 
 "dependencies": {    
-    "com.quocnt.unity-extensions": "https://github.com/quocnt-09/Unity-Extensions.git", 
+    "com.quocnt.unity-extensions": "https://github.com/quocnt-09/Unity-Extensions.git#0.2.0", 
 }
