@@ -1,0 +1,16 @@
+{
+    "name": "qnt.ui.text.hyperlink",
+    "references": [
+        "GUID:f1a96b4028b5a9c40a3f15401df0f9c6",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
