@@ -4,32 +4,25 @@ using UnityEngine;
 
 namespace QNT.Extension
 {
-    public struct QAction
+    public class ListAction
     {
-        public Delegate m_Action;
-        public object[] m_Params;
-        public Action m_DoneCallback;
-    }
-
-    public class QueueAction
-    {
-        private Queue<QAction> _queue;
+        private List<QAction> _list;
         private QAction _currentAction;
-
+        private int timesRetry;
         private bool _isExecute;
-        private float _timeDelay;
-        private const float Delay = 0.2f;
 
         public int Counter { get; private set; }
 
-        public QueueAction()
+        private float _timeDelay;
+        private const float Delay = 0.2f;
+
+        public ListAction()
         {
-            _queue = new Queue<QAction>();
+            _list = new List<QAction>();
             Counter = 0;
             _isExecute = false;
             _timeDelay = 0;
         }
-
         private string ToString(object[] Params)
         {
             var txt = "";
@@ -48,23 +41,21 @@ namespace QNT.Extension
 
             return txt;
         }
-
-        public void AddQueue(Delegate method, object[] Params = null, Action doneCallback = null)
+        public void AddList(Delegate method, object[] Params = null, Action doneCallback = null)
         {
-            _queue.Enqueue(new QAction {m_Action = method, m_Params = Params, m_DoneCallback = doneCallback});
-            Counter = _queue.Count;
+            _list.Add(new QAction {m_Action = method, m_Params = Params, m_DoneCallback = doneCallback});
+            Counter = _list.Count;
             _timeDelay = Delay;
-            Debug.Log($"<qnt> <--Queue--> Add: {method.Method.Name}({ToString(Params)})");
+            Debug.Log($"<qnt> <--List--> Add: {method.Method.Name}({ToString(Params)})");
         }
 
         public void Execute()
         {
-            _isExecute = true;
             _timeDelay = Delay;
-
-            _currentAction = _queue.Dequeue();
-            Counter = _queue.Count;
-            Debug.Log($"<qnt> <--Queue--> Execute: {_currentAction.m_Action.Method.Name}({ToString(_currentAction.m_Params)})");
+            _isExecute = true;
+            timesRetry = 2;
+            _currentAction = _list[0];
+            Debug.Log($"<qnt> <--List--> Execute: {_currentAction.m_Action.Method.Name}({ToString(_currentAction.m_Params)})");
             _currentAction.m_Action.DynamicInvoke(_currentAction.m_Params);
         }
 
@@ -75,18 +66,34 @@ namespace QNT.Extension
 
             _isExecute = false;
             _timeDelay = Delay;
+            if (Counter > 0)
+            {
+                _list.RemoveAt(0);
+            }
+            Counter = _list.Count;
+
             if (_currentAction.IsNull()) return;
-            Debug.Log($"<qnt> <--Queue--> Done: {_currentAction.m_Action.Method.Name}({ToString(_currentAction.m_Params)})");
+            
+            Debug.Log($"<--List--> Done: {_currentAction.m_Action.Method.Name}({ToString(_currentAction.m_Params)})");
             _currentAction.m_DoneCallback?.Invoke();
         }
 
-        public void Done(bool nextAction)
+        /// <summary>
+        /// return false when failed
+        /// </summary>
+        /// <returns></returns>
+        public bool RetryAction()
         {
-            _isExecute = false;
-            if (nextAction)
+            if (timesRetry > 0)
             {
-                NextAction(10, nextAction);
+                _currentAction.m_Action.DynamicInvoke(_currentAction.m_Params);
+                _isExecute = true;
+                timesRetry--;
+                Debug.Log($"<--List--> Retry: {_currentAction.m_Action.Method.Name}");
+                return true;
             }
+
+            return false;
         }
 
         public bool NextAction(float timeUpdate, bool executeNext = false)
@@ -97,7 +104,6 @@ namespace QNT.Extension
             if (executeNext)
             {
                 Execute();
-                return false;
             }
 
             return true;
@@ -106,13 +112,20 @@ namespace QNT.Extension
         public int CountMethod(string methodName)
         {
             var count = 0;
-            foreach (var action in _queue)
+            foreach (var action in _list)
             {
                 if (action.m_Action.Method.Name.Equals(methodName)) count++;
             }
 
-            Debug.Log($"<qnt> <--Queue--> Count: {methodName}: {count}");
+            Debug.Log($"<--List--> Count: {methodName}: {count}");
             return count;
+        }
+
+        public void ClearAll()
+        {
+            _list.Clear();
+            Counter = 0;
+            _isExecute = false;
         }
     }
 }
